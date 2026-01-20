@@ -1,0 +1,19 @@
+services:
+  sageit-mcp:
+    build: .
+    container_name: sageit-mcp
+    command: ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "3010"]
+    restart: unless-stopped
+    networks:
+      - root_default
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.sageitmcp.rule=Host(`mcp.sageit.cloud`)"
+      - "traefik.http.routers.sageitmcp.entrypoints=websecure"
+      - "traefik.http.routers.sageitmcp.tls=true"
+      - "traefik.http.routers.sageitmcp.tls.certresolver=le"
+      - "traefik.http.services.sageitmcp.loadbalancer.server.port=3010"
+
+networks:
+  root_default:
+    external: true
